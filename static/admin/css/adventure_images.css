@@ -1,0 +1,100 @@
+/* Estilo para a seção de imagens da aventura */
+.adventure-images-inline .tabular {
+  border: none !important;
+  background: transparent !important;
+}
+
+.adventure-images-inline thead {
+  display: none !important; /* Oculta o cabeçalho da tabela */
+}
+
+.adventure-images-inline .tabular tr.form-row {
+  display: inline-block;
+  width: 200px;
+  margin: 10px;
+  padding: 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #fff;
+  position: relative;
+}
+
+.adventure-images-inline .tabular tr.form-row td {
+  display: block;
+  padding: 0;
+}
+
+/* Oculta campos desnecessários */
+.adventure-images-inline .tabular tr.form-row td.field-title,
+.adventure-images-inline .tabular tr.form-row td.field-description,
+.adventure-images-inline .tabular tr.form-row td.field-order,
+.adventure-images-inline .tabular tr.form-row td.field-is_cover,
+.adventure-images-inline .tabular tr.form-row td.original {
+  display: none !important;
+}
+
+/* Exibe apenas a imagem e os botões de ação */
+.adventure-images-inline .tabular tr.form-row td.field-image_preview {
+  height: 150px;
+  overflow: hidden;
+}
+
+.adventure-images-inline .tabular tr.form-row td.field-image_preview img {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 5px 5px 0 0;
+}
+
+.adventure-images-inline .tabular tr.form-row td.field-image {
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+/* Estiliza o botão de excluir */
+.adventure-images-inline .tabular tr.form-row td.delete {
+  padding: 10px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.adventure-images-inline .tabular tr.form-row td.delete a {
+  color: #d63638;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Estiliza o seletor de arquivos */
+.adventure-images-inline h2 {
+  margin-top: 0;
+  color: #417690;
+  font-size: 18px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.adventure-images-inline .add-row {
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.adventure-images-inline .add-row a {
+  display: inline-block;
+  background-color: #417690;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.adventure-images-inline .add-row a:hover {
+  background-color: #205067;
+}

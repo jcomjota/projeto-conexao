@@ -1,0 +1,349 @@
+{% extends "admin/base.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block title %}
+  {% if add %}Adicionar {% else %}Alterar {% endif %}{{ opts.verbose_name }} | Conexão Adventure Admin
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}"><i class="fas fa-home"></i> Home</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; {% if add %}Adicionar{% else %}{{ original|truncatewords:"18" }}{% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  {% block object-tools %}
+    {% if change %}{% if not is_popup %}
+      <ul class="object-tools">
+        {% block object-tools-items %}
+          <li>
+            <a href="{% url opts|admin_urlname:'add' %}" class="addlink">
+              <i class="fas fa-plus"></i> Adicionar {{ opts.verbose_name }}
+            </a>
+          </li>
+          {% if has_delete_permission %}
+            <li>
+              <a href="{% url opts|admin_urlname:'delete' original.pk|admin_urlquote %}" class="deletelink">
+                <i class="fas fa-trash"></i> Excluir
+              </a>
+            </li>
+          {% endif %}
+          <li>
+            <a href="{% url opts|admin_urlname:'changelist' %}" class="historylink">
+              <i class="fas fa-list"></i> Ver lista
+            </a>
+          </li>
+        {% endblock %}
+      </ul>
+    {% endif %}{% endif %}
+  {% endblock %}
+  
+  <div class="form-container">
+    <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form" novalidate>
+      {% csrf_token %}
+      {% block form_top %}{% endblock %}
+      
+      <div class="form-content">
+        {% if errors %}
+          <div class="form-errors">
+            <h3><i class="fas fa-exclamation-triangle"></i> Corrigir os erros abaixo:</h3>
+            {{ adminform.form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        {% block field_sets %}
+          {% for fieldset in adminform %}
+            {% include "admin/includes/fieldset.html" %}
+          {% endfor %}
+        {% endblock %}
+
+        {% block after_field_sets %}{% endblock %}
+
+        {% block inline_field_sets %}
+          {% for inline_admin_formset in inline_admin_formsets %}
+            {% include inline_admin_formset.opts.template %}
+          {% endfor %}
+        {% endblock %}
+
+        {% block after_related_objects %}{% endblock %}
+
+        {% block submit_buttons_bottom %}
+          <div class="submit-row">
+            <input type="submit" value="{% if add %}Salvar{% else %}Salvar alterações{% endif %}" class="default" name="_save">
+            {% if has_add_permission %}
+              <input type="submit" value="Salvar e adicionar outro" name="_addanother">
+            {% endif %}
+            {% if change and has_view_permission %}
+              <input type="submit" value="Salvar e continuar editando" name="_continue">
+            {% endif %}
+          </div>
+        {% endblock %}
+      </div>
+      
+      {% block admin_change_form_document_ready %}
+        <script id="django-admin-form-add-constants"
+                src="{% static 'admin/js/change_form.js' %}"
+                data-model-name="{{ opts.model_name }}"
+                async>
+        </script>
+      {% endblock %}
+      
+      {% block form_bottom %}{% endblock %}
+    </form>
+  </div>
+</div>
+
+<style>
+/* Estilos customizados para formulários do admin */
+.form-container {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+}
+
+.form-content {
+    padding: 2rem;
+}
+
+.form-errors {
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    color: #dc2626;
+}
+
+.form-errors h3 {
+    margin: 0 0 1rem 0;
+    color: #dc2626;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Object tools */
+.object-tools {
+    list-style: none;
+    margin: 0 0 2rem 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.object-tools .addlink {
+    background: var(--gradient-bg);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.object-tools .deletelink {
+    background: #dc3545;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.object-tools .historylink {
+    background: var(--secondary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.object-tools a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    color: white;
+    text-decoration: none;
+}
+
+/* Fieldsets */
+.module {
+    margin-bottom: 2rem;
+}
+
+.module h2 {
+    background: var(--gradient-bg);
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    margin: 0;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.module .form-row {
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.module .form-row:last-child {
+    border-bottom: none;
+}
+
+.module .form-row label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: var(--dark-bg);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.module .form-row input,
+.module .form-row select,
+.module .form-row textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: var(--border-radius);
+    font-family: 'Poppins', sans-serif;
+    transition: var(--transition);
+    box-sizing: border-box;
+}
+
+.module .form-row input:focus,
+.module .form-row select:focus,
+.module .form-row textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    outline: none;
+}
+
+.module .form-row .help {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+.module .form-row .errorlist {
+    color: #dc2626;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    list-style: none;
+    padding: 0;
+}
+
+.module .form-row .errorlist li {
+    background: #fee2e2;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+}
+
+/* Submit row */
+.submit-row {
+    background: #f8f9fa;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.submit-row input {
+    background: var(--gradient-bg);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.submit-row input:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.submit-row input.default {
+    background: var(--primary-color);
+}
+
+.submit-row input[name="_addanother"] {
+    background: var(--secondary-color);
+}
+
+.submit-row input[name="_continue"] {
+    background: #6c757d;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .object-tools {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .form-content {
+        padding: 1rem;
+    }
+    
+    .submit-row {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+    }
+    
+    .submit-row input {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Animações */
+.form-container {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock %} 

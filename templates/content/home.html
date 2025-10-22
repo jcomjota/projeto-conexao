@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Conexão Adventure - Rapel - Cachoeirismo - Trekking - Acampamento{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section Original -->
+<section class="hero">
+    <div class="hero-video">
+        <video autoplay muted loop playsinline>
+            <source src="{% static 'images/video/video.mp4' %}" type="video/mp4">
+        </video>
+    </div>
+    <div class="hero-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="container">
+        <h1>Aventuras Incríveis<br>Experiências Inesquecíveis</h1>
+        <p>Rapel  • Cachoeirismo • Trekking • Acampamentos e outras aventuras para você explorar</p>
+        <div class="hero-buttons">
+            <a href="{% url 'adventures:list' %}" class="btn btn-primary">Ver Aventuras</a>
+            <a href="{% url 'content:contact' %}" class="btn btn-outline">Fale Conosco</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">50+</span>
+                <span class="stat-text">Aventuras</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">2k+</span>
+                <span class="stat-text">Aventureiros</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-text">Segurança</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Safety Section Original -->
+<section class="safety">
+    <div class="container">
+        <div class="section-header">
+            <h2>Empresa Segura e Certificada</h2>
+            <p class="section-subtitle">Viaje com tranquilidade e confiança</p>
+        </div>
+        <div class="safety-content">
+            <div class="safety-text">
+                <p>Todas as nossas Aventuras estão cobertas pelo Seguro Roca Seguros.</p>
+                <p>Aqui a sua Aventura é mais Segura e Confiável.</p>
+                <p>Quer passar um dia diferente? Então vem com a Gente!</p>
+                <ul class="safety-features">
+                    <li><i class="fas fa-check-circle"></i> Guias especializados</li>
+                    <li><i class="fas fa-check-circle"></i> Seguro incluso</li>
+                    <li><i class="fas fa-check-circle"></i> Equipamentos de qualidade</li>
+                    <li><i class="fas fa-check-circle"></i> Suporte 24h</li>
+                </ul>
+            </div>
+            <div class="certificates">
+                <div class="certificate-item">
+                    <img src="{% static 'images/parceiros/roca.jpg' %}" alt="roca-seguros">
+                </div>
+                <div class="certificate-item">
+                    <img src="{% static 'images/parceiros/cadastur.png' %}" alt="Cadastur">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Photos Section Original -->
+<section class="photos">
+    <div class="container">
+        <div class="section-header">
+            <h2>Nossa Programação</h2>
+            <p class="section-subtitle">Escolha sua próxima aventura</p>
+        </div>
+        <div class="photo-grid">
+            {% if featured_adventures %}
+                {% for adventure in featured_adventures %}
+                    <div class="photo-item">
+                        <div class="photo-image">
+                            {% if adventure.main_image %}
+                                <img src="{{ adventure.main_image.url }}" alt="{{ adventure.title }}">
+                            {% else %}
+                                <img src="{% static 'images/aventuras/capa/default.jpg' %}" alt="{{ adventure.title }}">
+                            {% endif %}
+                            <div class="photo-overlay">
+                                <a href="{% url 'adventures:detail' adventure.slug %}" class="overlay-link">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="photo-info">
+                            <h3>{{ adventure.title }}</h3>
+                            <p>{{ adventure.category.name }}{% if adventure.subcategory %} • {{ adventure.subcategory.name }}{% endif %} • {{ adventure.get_difficulty_display }}</p>
+                            <a href="{% url 'adventures:detail' adventure.slug %}" class="btn btn-secondary">Ver Aventura</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="photo-item">
+                    <div class="photo-image">
+                        <img src="{% static 'images/aventuras/capa/cascata-do-vinho.jpg' %}" alt="Cascata do Vinho">
+                        <div class="photo-overlay">
+                            <a href="#" class="overlay-link">
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="photo-info">
+                        <h3>Cascata do Vinho</h3>
+                        <p>Rapel • Cachoeirismo • Nível Moderado</p>
+                        <a href="#" class="btn btn-secondary">Ver Aventura</a>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="photo-item">
+                <div class="photo-image">
+                    <img src="{% static 'images/aventuras/capa/jaboticaba.jpg' %}" alt="Jaboticaba">
+                    <div class="photo-overlay">
+                        <a href="#" class="overlay-link">
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="photo-info">
+                    <h3>Rapel Estação Jaboticaba</h3>
+                    <p>Rapel • Trekking • Nível Avançado</p>
+                    <a href="#" class="btn btn-secondary">Ver Aventura</a>
+                </div>
+            </div>
+            <div class="photo-item">
+                <div class="photo-image">
+                    <img src="{% static 'images/aventuras/capa/pompeia.jpg' %}" alt="Rapel Cascata Pompeia">
+                    <div class="photo-overlay">
+                        <a href="#" class="overlay-link">
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="photo-info">
+                    <h3>Cascata Pompeia</h3>
+                    <p>Rapel • Cachoeirismo • Nível Intermediário</p>
+                    <a href="#" class="btn btn-secondary">Ver Aventura</a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <a href="{% url 'adventures:list' %}" class="btn btn-primary">Ver toda programação</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section Original -->
+<section class="testimonials">
+    <div class="container">
+        <div class="section-header">
+            <h2>O Que Dizem Nossos Aventureiros</h2>
+            <p class="section-subtitle">Histórias compartilhadas por quem já viveu a experiência</p>
+        </div>
+        <div class="testimonial-grid">
+            <div class="testimonial-item">
+                <div class="testimonial-content">
+                    <p>Entrei para a Conexão Adventure porque adoro realizar caminhadas e trilhas. Além do contato com o ar puro e a natureza, encontrei nos organizadores e nos parceiros de pernada pessoas ímpares, queridas e prestativas. Me sinto muito feliz em fazer parte desse grupo e espero poder realizar inúmeras aventuras ainda.</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-info">
+                        <h4>Fabiane Debenetti</h4>
+                        <p>Carlos Barbosa • 1ª Aventura Abril/2024</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-item">
+                <div class="testimonial-content">
+                    <p>Foi minha primeira aventura. Passei um dia incrível! Turma super bacana, lugares impactantes, outros transmitindo uma paz absurda. Andamos numa velocidade suave o suficiente para poder olhar ao redor e acalmar a mente. Amei a experiência, me senti segura e acolhida. Guias atenciosos e super legais. Adorei!</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-info">
+                        <h4>Andréia Bonadiman</h4>
+                        <p>Garibaldi • 1ª Aventura Julho/2024</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-item">
+                <div class="testimonial-content">
+                    <p>Experiência incrível, paisagens maravilhosas, tudo super organizado pelo Cris, com fotografia fantástica! Vivenciar o lugar no qual o tour acontece faz toda a diferença, dá sentido para tudo aquilo que nos é apresentado. Primeiro de muitos trekkings que pretendo fazer com a Conexão Adventure! 😉😘</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-info">
+                        <h4>Marilene Gertrudes</h4>
+                        <p>Caxias do Sul • 1ª Aventura Fevereiro/2022</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-actions">
+            <a href="#" class="btn btn-secondary">Ver todos depoimentos</a>
+            <a href="#" class="btn btn-primary">Compartilhe sua experiência</a>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section Original -->
+<section class="newsletter">
+    <div class="container">
+        <div class="newsletter-content">
+            <div class="newsletter-info">
+                <h2>Fique por dentro de nossas próximas aventuras</h2>
+                <p>Receba em primeira mão informações sobre novas trilhas, promoções e dicas de viagem.</p>
+            </div>
+            <form action="#" method="post" class="newsletter-form">
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Seu melhor email" required>
+                    <button type="submit" class="btn btn-primary">Inscrever-se</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

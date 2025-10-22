@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Área do Aventureiro - {{ user.get_full_name|default:user.username }} - Conexão Adventure{% endblock %}
+
+{% block content %}
+<div class="adventurer-area">
+    <div class="container">
+        <!-- Cabeçalho de Boas-vindas -->
+        <div class="welcome-header">
+            <div class="welcome-content">
+                <h1>Bem-vindo(a), {{ user.first_name|default:user.username }}!</h1>
+                <p>Acompanhe suas aventuras e conquistas</p>
+            </div>
+            <div class="welcome-actions">
+                <a href="{% url 'users:logout' %}" class="btn btn-logout" onclick="return confirm('Tem certeza que deseja sair?')">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </div>
+        </div>
+
+        <!-- Bloco do Perfil -->
+        <div class="dashboard-block">
+            <div class="block-header">
+                <i class="fas fa-user"></i>
+                <h2>Perfil do Aventureiro</h2>
+            </div>
+            <div class="block-content">
+                <div class="profile-info">
+                    <div class="profile-photo">
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="Foto de perfil">
+                        {% else %}
+                            <i class="fas fa-user"></i>
+                        {% endif %}
+                    </div>
+                    <div class="profile-details">
+                        <h3>{{ user.get_full_name|default:user.username }}</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>{{ user.email }}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-phone"></i>
+                                <span>{{ user.phone|default:"Não informado" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-id-card"></i>
+                                <span>{{ user.cpf|default:"11111111" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>Membro desde {{ user.date_joined|date:"d/m/Y" }}</span>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <a href="{% url 'users:profile' %}" class="btn btn-primary">
+                                <i class="fas fa-edit"></i> Editar Perfil
+                            </a>
+                            <a href="{% url 'users:password_change' %}" class="btn btn-primary">
+                                <i class="fas fa-key"></i> Alterar Senha
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloco de Aventuras -->
+        <div class="dashboard-block">
+            <div class="block-header">
+                <i class="fas fa-mountain"></i>
+                <h2>Minhas Aventuras</h2>
+            </div>
+            <div class="block-content">
+                {% if user_adventures %}
+                    <div class="adventures-list">
+                        {% for adventure in user_adventures %}
+                            <div class="adventure-item">
+                                <div class="adventure-info">
+                                    <h4>{{ adventure.adventure.title }}</h4>
+                                    <p>
+                                        <i class="fas fa-calendar"></i>
+                                        {{ adventure.event.start_date|date:"d/m/Y" }}
+                                    </p>
+                                    <p>
+                                        <i class="fas fa-users"></i>
+                                        {{ adventure.num_participants }} participante(s)
+                                    </p>
+                                    <div class="adventure-status">
+                                        {% if adventure.status == 'pending' %}
+                                            <span class="status-badge pending">
+                                                <i class="fas fa-clock"></i> Aguardando
+                                            </span>
+                                        {% elif adventure.status == 'approved' %}
+                                            <span class="status-badge approved">
+                                                <i class="fas fa-check"></i> Confirmada
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="adventure-actions">
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-info-circle"></i> Detalhes
+                                    </a>
+                                    {% if adventure.status == 'pending' %}
+                                        <a href="#" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i> Cancelar
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-hiking"></i>
+                        <p>Você ainda não tem nenhuma aventura agendada.</p>
+                        <a href="{% url 'adventures:list' %}" class="btn btn-primary">
+                            <i class="fas fa-compass"></i> Explorar Aventuras
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Bloco de Ranking e Pontos -->
+        <div class="dashboard-block">
+            <div class="block-header">
+                <i class="fas fa-trophy"></i>
+                <h2>Ranking e Conquistas</h2>
+            </div>
+            <div class="block-content">
+                <div class="ranking-info">
+                    <div class="level-info">
+                        <h3>Nível de Aventureiro</h3>
+                        <div class="level-badge">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p>Nível {{ user.adventurer_level|default:"1" }}</p>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 60%"></div>
+                        </div>
+                        <p>300/500 pontos para o próximo nível</p>
+                    </div>
+
+                    <div class="points-info">
+                        <div class="points-item">
+                            <div class="points-value">{{ user.total_points|default:"0" }}</div>
+                            <div class="points-label">Pontos Totais</div>
+                        </div>
+                        <div class="points-item">
+                            <div class="points-value">{{ user.adventures_completed|default:"0" }}</div>
+                            <div class="points-label">Aventuras Completadas</div>
+                        </div>
+                    </div>
+
+                    <div class="badges-info">
+                        <h3>Minhas Conquistas</h3>
+                        <div class="badges-grid">
+                            {% for badge in user.badges.all %}
+                                <div class="badge-item" title="{{ badge.name }}">
+                                    <i class="{{ badge.icon }}"></i>
+                                </div>
+                            {% empty %}
+                                <p>Nenhuma conquista desbloqueada ainda</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

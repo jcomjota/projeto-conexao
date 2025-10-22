@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Como Funciona - Conexão Adventure{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Como Funciona</h1>
+            <p class="hero-subtitle">Descubra como é fácil participar das nossas aventuras</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <i class="fas fa-users"></i>
+                    <span class="stat-number">2k+</span>
+                    <span class="stat-text">Aventureiros</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-mountain"></i>
+                    <span class="stat-number">50+</span>
+                    <span class="stat-text">Aventuras</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-star"></i>
+                    <span class="stat-number">4.9</span>
+                    <span class="stat-text">Avaliação</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Process Section -->
+<section class="process-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Nosso Processo</h2>
+            <p>4 passos simples para sua aventura inesquecível</p>
+        </div>
+        
+        <div class="process-timeline">
+            <div class="process-step">
+                <div class="step-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="step-content">
+                    <h3>1. Escolha sua Aventura</h3>
+                    <p>Navegue por nossa programação e escolha a aventura que mais combina com você. Temos opções para todos os níveis de experiência.</p>
+                    <div class="step-features">
+                        <span><i class="fas fa-check"></i> Diferentes níveis de dificuldade</span>
+                        <span><i class="fas fa-check"></i> Várias modalidades disponíveis</span>
+                        <span><i class="fas fa-check"></i> Datas flexíveis</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="step-content">
+                    <h3>2. Faça sua Reserva</h3>
+                    <p>Entre em contato conosco para confirmar sua participação e fazer o pagamento. Processo simples e seguro.</p>
+                    <div class="step-features">
+                        <span><i class="fas fa-check"></i> Reserva online ou por WhatsApp</span>
+                        <span><i class="fas fa-check"></i> Pagamento parcelado</span>
+                        <span><i class="fas fa-check"></i> Confirmação imediata</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-icon">
+                    <i class="fas fa-backpack"></i>
+                </div>
+                <div class="step-content">
+                    <h3>3. Prepare-se</h3>
+                    <p>Receba todas as informações necessárias e prepare-se para a aventura. Incluindo lista de equipamentos e dicas importantes.</p>
+                    <div class="step-features">
+                        <span><i class="fas fa-check"></i> Lista de equipamentos</span>
+                        <span><i class="fas fa-check"></i> Dicas de preparação</span>
+                        <span><i class="fas fa-check"></i> Informações do local</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="step-content">
+                    <h3>4. Viva a Experiência</h3>
+                    <p>Participe da aventura e crie memórias inesquecíveis com nossa equipe. Segurança e diversão garantidas.</p>
+                    <div class="step-features">
+                        <span><i class="fas fa-check"></i> Guias experientes</span>
+                        <span><i class="fas fa-check"></i> Equipamentos de qualidade</span>
+                        <span><i class="fas fa-check"></i> Fotos da aventura</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Info Section -->
+<section class="info-section">
+    <div class="container">
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Segurança Garantida</h3>
+                <p>Todos os nossos equipamentos são certificados e nossos guias são treinados para garantir sua segurança em todas as aventuras.</p>
+            </div>
+            
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Horários Flexíveis</h3>
+                <p>Oferecemos aventuras em diferentes horários e dias da semana, incluindo finais de semana e feriados.</p>
+            </div>
+            
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Grupos Pequenos</h3>
+                <p>Mantemos grupos reduzidos para garantir uma experiência mais personalizada e segura para todos os participantes.</p>
+            </div>
+            
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3>Fotos Inclusas</h3>
+                <p>Nossos guias registram os melhores momentos da sua aventura. Você tem a escolha de ter os registros somente seus ou os registros em grupo.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Pronto para sua Aventura?</h2>
+            <p>Entre em contato conosco e comece sua jornada de descobertas na natureza</p>
+            <div class="cta-buttons">
+                <a href="{% url 'adventures:list' %}" class="btn btn-primary">Ver Aventuras</a>
+                <a href="#" class="btn btn-outline">Falar Conosco</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

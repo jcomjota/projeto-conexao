@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inscrição - {{ event.adventure.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .registration-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .event-info {
+        background: var(--gradient-bg);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .event-info h2 {
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+    }
+    
+    .event-details {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .event-detail {
+        text-align: center;
+    }
+    
+    .event-detail i {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .cpf-form {
+        text-align: center;
+    }
+    
+    .cpf-input {
+        font-size: 1.2rem;
+        padding: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+        margin-bottom: 1rem;
+        transition: border-color 0.3s;
+    }
+    
+    .cpf-input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+    }
+    
+    .btn-check-cpf {
+        background: var(--gradient-bg);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .btn-check-cpf:hover {
+        transform: translateY(-2px);
+    }
+    
+    .btn-check-cpf:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .loading-spinner {
+        display: none;
+        margin: 1rem 0;
+    }
+    
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid var(--primary-color);
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .info-box {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-top: 2rem;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .info-box h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .info-box ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .info-box li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .info-box li:last-child {
+        border-bottom: none;
+    }
+    
+    .info-box i {
+        color: var(--secondary-color);
+        margin-right: 0.5rem;
+    }
+    
+    .vagas-info {
+        background: #e8f5e8;
+        color: #2d5a2d;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    .vagas-info.poucas {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .vagas-info.esgotado {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    @media (max-width: 768px) {
+        .registration-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .event-details {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="registration-container">
+    <div class="event-info">
+        <h2>{{ event.adventure.title }}</h2>
+        <div class="event-details">
+            <div class="event-detail">
+                <i class="fas fa-calendar-alt"></i>
+                <div>{{ event.date|date:"d/m/Y" }}</div>
+            </div>
+            <div class="event-detail">
+                <i class="fas fa-clock"></i>
+                <div>{{ event.start_time|time:"H:i" }}</div>
+            </div>
+            <div class="event-detail">
+                <i class="fas fa-dollar-sign"></i>
+                <div>R$ {{ event.final_price }}</div>
+            </div>
+            <div class="event-detail">
+                <i class="fas fa-users"></i>
+                <div>{{ event.available_spots }} vagas</div>
+            </div>
+        </div>
+        
+        {% if event.available_spots > 0 %}
+            {% if event.available_spots <= 3 %}
+                <div class="vagas-info poucas">
+                    ⚠️ Poucas vagas restantes!
+                </div>
+            {% else %}
+                <div class="vagas-info">
+                    ✅ Vagas disponíveis
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="vagas-info esgotado">
+                ❌ Evento esgotado
+            </div>
+        {% endif %}
+    </div>
+    
+    {% if event.available_spots > 0 %}
+        <div class="cpf-form">
+            <h3>Verificação de CPF</h3>
+            <p>Para continuar com a inscrição, digite seu CPF:</p>
+            
+            <form id="cpfForm">
+                {% csrf_token %}
+                <input type="text" 
+                       id="cpfInput" 
+                       class="cpf-input" 
+                       placeholder="000.000.000-00"
+                       maxlength="14"
+                       required>
+                <br>
+                <button type="submit" class="btn-check-cpf" id="btnCheckCPF">
+                    Verificar CPF
+                </button>
+            </form>
+            
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Verificando CPF...</p>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3><i class="fas fa-info-circle"></i> Como funciona?</h3>
+            <ul>
+                <li>
+                    <i class="fas fa-user-check"></i>
+                    <strong>Cliente já cadastrado:</strong> Se seu CPF já estiver no sistema, você poderá fazer a inscrição e pagamento imediatamente.
+                </li>
+                <li>
+                    <i class="fas fa-user-plus"></i>
+                    <strong>Novo cliente:</strong> Se for seu primeiro evento conosco, você fará uma pré-inscrição e aguardará nossa confirmação.
+                </li>
+                <li>
+                    <i class="fas fa-whatsapp"></i>
+                    <strong>WhatsApp:</strong> Você receberá atualizações pelo WhatsApp em todas as etapas.
+                </li>
+                <li>
+                    <i class="fas fa-lock"></i>
+                    <strong>Segurança:</strong> Seus dados são protegidos e utilizados apenas para este processo.
+                </li>
+            </ul>
+        </div>
+    {% else %}
+        <div class="text-center">
+            <h3>Evento Esgotado</h3>
+            <p>Infelizmente este evento já está com todas as vagas preenchidas.</p>
+            <p>Entre em contato conosco para ser notificado sobre próximas datas!</p>
+            
+            <a href="https://wa.me/5554993216261?text=Olá! Gostaria de ser notificado sobre próximas datas da aventura {{ event.adventure.title }}." 
+               class="btn btn-primary" 
+               target="_blank">
+                <i class="fab fa-whatsapp"></i> Entrar em Contato
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cpfInput = document.getElementById('cpfInput');
+    const form = document.getElementById('cpfForm');
+    const btnCheck = document.getElementById('btnCheckCPF');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    
+    // Máscara para CPF
+    cpfInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})/, '$1-$2');
+        e.target.value = value;
+    });
+    
+    // Submissão do formulário
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const cpf = cpfInput.value.replace(/\D/g, '');
+        
+        if (cpf.length !== 11) {
+            alert('Por favor, digite um CPF válido com 11 dígitos.');
+            return;
+        }
+        
+        // Mostrar loading
+        btnCheck.disabled = true;
+        loadingSpinner.style.display = 'block';
+        
+        // Obter CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        console.log('🔍 Debug - CPF:', cpf, 'CSRF:', csrfToken ? 'OK' : 'MISSING');
+        
+        // Enviar requisição AJAX
+        fetch(`/reservas/event/{{ event.id }}/check-cpf/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({
+                cpf: cpf
+            })
+        })
+        .then(response => {
+            console.log('📡 Response status:', response.status);
+            console.log('📡 Response ok:', response.ok);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('📦 Response data:', data);
+            if (data.success) {
+                console.log('✅ Sucesso! Redirecionando para:', data.redirect_url);
+                // Redirecionar conforme o tipo de cliente
+                window.location.href = data.redirect_url;
+            } else {
+                console.log('❌ Erro na resposta:', data.error);
+                alert(data.error || 'Erro ao verificar CPF. Tente novamente.');
+            }
+        })
+        .catch(error => {
+            console.error('🚨 Erro completo:', error);
+            alert(`Erro de conexão: ${error.message}. Tente novamente.`);
+        })
+        .finally(() => {
+            // Ocultar loading
+            btnCheck.disabled = false;
+            loadingSpinner.style.display = 'none';
+        });
+    });
+});
+</script>
+{% endblock %} 

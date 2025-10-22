@@ -1,0 +1,589 @@
+{% load i18n static %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+<head>
+<title>{% block title %}{% endblock %} | Conexão Adventure Admin</title>
+<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}">
+<link rel="stylesheet" type="text/css" href="{% static "styles/main.css" %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% block extrahead %}
+    {% load static %}
+    {% if 'adventures/adventure' in request.path %}
+        <link rel="stylesheet" type="text/css" href="{% static 'admin/css/adventure_images.css' %}">
+        <script type="text/javascript" src="{% static 'admin/js/adventure_images.js' %}"></script>
+    {% endif %}
+{% endblock %}
+{% block responsive %}
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/responsive.css" %}">
+{% endblock %}
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
+<link rel="icon" type="image/png" href="{% static 'images/favicon/favicon.png' %}">
+
+<style>
+/* Customizações para o admin da Conexão Adventure */
+:root {
+    --primary-color: #ff6b35;
+    --secondary-color: #4caf50;
+    --gradient-bg: linear-gradient(135deg, #ff6b35 0%, #4caf50 100%);
+    --dark-bg: #2c1810;
+    --light-text: #ffffff;
+    --sidebar-width: 280px;
+    --header-height: 70px;
+    --border-radius: 12px;
+    --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    overflow-x: hidden;
+}
+
+/* Layout principal */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.admin-sidebar {
+    width: var(--sidebar-width);
+    background: var(--gradient-bg);
+    color: var(--light-text);
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    overflow-y: auto;
+    transition: var(--transition);
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-header h1:before {
+    content: '🏔️';
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.sidebar-nav {
+    padding: 1rem 0;
+}
+
+.nav-section {
+    margin-bottom: 1rem;
+}
+
+.nav-section-title {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Classe específica para os títulos do menu lateral */
+.admin-sidebar-title {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Propriedades adicionais que podem ser personalizadas */
+    background-color: rgba(0, 0, 0, 0.1);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link { 
+    display: flex; 
+    align-items: center; 
+    padding: 1rem 1.5rem; 
+    color: var(--light-text) !important; 
+    text-decoration: none; 
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-left-color: rgba(255, 255, 255, 0.5);
+    color: var(--light-text);
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    border-left-color: var(--light-text);
+}
+
+.nav-link i {
+    width: 20px;
+    margin-right: 12px;
+    font-size: 1.1rem;
+}
+
+.nav-submenu {
+    background: rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+.nav-item.active .nav-submenu {
+    display: block;
+}
+
+.nav-submenu .nav-link {
+    padding-left: 3rem;
+    font-size: 0.9rem;
+}
+
+.nav-toggle {
+    background: none;
+    border: none;
+    color: var(--light-text);
+    float: right;
+    font-size: 0.8rem;
+    transition: var(--transition);
+}
+
+.nav-item.active .nav-toggle {
+    transform: rotate(180deg);
+}
+
+/* Conteúdo principal */
+.admin-main {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-header {
+    background: white;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.admin-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+/* User tools */
+.user-tools {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-tools a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.user-tools a:hover {
+    background: rgba(255, 107, 53, 0.1);
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.breadcrumbs a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Dashboard cards */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.card-header h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: var(--dark-bg);
+    margin: 0;
+}
+
+.card-header i {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    color: var(--primary-color);
+}
+
+/* Modules */
+.module h2, .module caption, .inline-group h2 {
+    background: var(--gradient-bg) !important;
+    color: var(--light-text) !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 600 !important;
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+    padding: 1rem !important;
+    margin: 0 !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.module {
+    border: none !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: var(--box-shadow) !important;
+    margin-bottom: 2rem !important;
+    overflow: hidden !important;
+    background: white !important;
+}
+
+/* Botões */
+.button, input[type=submit], input[type=button], .submit-row input, button {
+    background: var(--gradient-bg) !important;
+    border: none !important;
+    color: var(--light-text) !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: var(--border-radius) !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: var(--transition) !important;
+    text-transform: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+    color: var(--light-text) !important;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .admin-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    .admin-main {
+        margin-left: 0;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Ocultar elementos padrão do Django Admin */
+#header, #footer, #container {
+    display: none !important;
+}
+</style>
+</head>
+
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}"
+  data-admin-utc-offset="{% now "Z" %}">
+
+{% if not is_popup %}
+<div class="admin-layout">
+    <!-- Sidebar - Só exibe se o usuário estiver autenticado -->
+    {% if user.is_authenticated %}
+    <div class="admin-sidebar">
+        <div class="sidebar-header">
+            <h1><a href="{% url 'admin:index' %}" style="color: white; text-decoration: none;">Conexão Adventure</a></h1>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="admin-sidebar-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="{% url 'admin:index' %}" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Painel Principal</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="admin-sidebar-title">Aventuras</div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-mountain"></i>
+                        <span>Aventuras</span>
+                        <button class="nav-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="{% url 'admin:adventures_adventure_changelist' %}" class="nav-link">
+                            <i class="fas fa-list"></i>
+                            <span>Ver Aventuras</span>
+                        </a>
+                        <a href="{% url 'admin:adventures_adventure_add' %}" class="nav-link">
+                            <i class="fas fa-plus"></i>
+                            <span>Adicionar Aventura</span>
+                        </a>
+                        <a href="{% url 'admin:adventures_category_changelist' %}" class="nav-link">
+                            <i class="fas fa-tags"></i>
+                            <span>Categorias</span>
+                        </a>
+                        <a href="{% url 'admin:adventures_category_add' %}" class="nav-link">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Adicionar Categoria</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="admin-sidebar-title">Reservas</div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Reservas</span>
+                        <button class="nav-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="{% url 'admin:bookings_booking_changelist' %}" class="nav-link">
+                            <i class="fas fa-list"></i>
+                            <span>Ver Reservas</span>
+                        </a>
+                        <a href="{% url 'admin:bookings_adventureevent_changelist' %}" class="nav-link">
+                            <i class="fas fa-calendar"></i>
+                            <span>Eventos</span>
+                        </a>
+                        <a href="{% url 'admin:bookings_adventureevent_add' %}" class="nav-link">
+                            <i class="fas fa-plus"></i>
+                            <span>Adicionar Evento</span>
+                        </a>
+                        <a href="{% url 'admin:bookings_payment_changelist' %}" class="nav-link">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Pagamentos</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="admin-sidebar-title">Usuários</div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-users"></i>
+                        <span>Usuários</span>
+                        <button class="nav-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="{% url 'admin:users_customuser_changelist' %}" class="nav-link">
+                            <i class="fas fa-list"></i>
+                            <span>Ver Usuários</span>
+                        </a>
+                        <a href="{% url 'admin:users_customuser_add' %}" class="nav-link">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Adicionar Usuário</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="admin-sidebar-title">Conteúdo</div>
+                <div class="nav-item">
+                    <a href="/admin/content/" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Páginas</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/materials/" class="nav-link">
+                        <i class="fas fa-tools"></i>
+                        <span>Materiais</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    {% endif %}
+    
+    <!-- Conteúdo principal -->
+    <div class="admin-main" {% if not user.is_authenticated %}style="margin-left: 0;"{% endif %}>
+        {% if user.is_authenticated %}
+        <header class="admin-header">
+            <div class="breadcrumbs">
+                <a href="{% url 'admin:index' %}"><i class="fas fa-home"></i> Dashboard</a>
+                {% if title %} <i class="fas fa-chevron-right"></i> {{ title }}{% endif %}
+            </div>
+            
+            {% if has_permission %}
+            <div class="user-tools">
+                <span><i class="fas fa-user"></i> Olá, {% firstof user.get_short_name user.get_username %}</span>
+                {% if site_url %}
+                    <a href="{{ site_url }}"><i class="fas fa-globe"></i> Ver site</a>
+                {% endif %}
+                {% if user.has_usable_password %}
+                <a href="{% url 'admin:password_change' %}"><i class="fas fa-key"></i> Alterar senha</a>
+                {% endif %}
+                <form method="post" action="{% url 'admin:logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none;border:none;padding:0;color:inherit;text-decoration:underline;cursor:pointer;">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </header>
+        {% endif %}
+        
+        <main class="admin-content">
+            {% block messages %}
+                {% if messages %}
+                <ul class="messagelist">{% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+                {% endfor %}</ul>
+                {% endif %}
+            {% endblock messages %}
+            
+            {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+            {% block content %}
+            {% block object-tools %}{% endblock %}
+            {{ content }}
+            {% endblock %}
+            {% block sidebar %}{% endblock %}
+        </main>
+    </div>
+</div>
+{% else %}
+<!-- Layout para popups -->
+<div id="container">
+    {% block breadcrumbs %}
+    <div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}"><i class="fas fa-home"></i> Home</a>
+    {% if title %} &rsaquo; {{ title }}{% endif %}
+    </div>
+    {% endblock %}
+
+    <!-- Messages já definidas no layout principal -->
+
+    <div id="content" class="{% block coltype %}colM{% endblock %}">
+        {% block pretitle %}{% endblock %}
+        <!-- content_title já definido no layout principal -->
+        <!-- content já definido no layout principal -->
+        {{ content }}
+        <!-- sidebar já definido no layout principal -->
+        <br class="clear">
+    </div>
+</div>
+{% endif %}
+
+<script>
+function toggleSubmenu(element) {
+    event.preventDefault();
+    const navItem = element.closest('.nav-item');
+    const isActive = navItem.classList.contains('active');
+    
+    // Fechar todos os outros submenus
+    document.querySelectorAll('.nav-item.active').forEach(item => {
+        if (item !== navItem) {
+            item.classList.remove('active');
+        }
+    });
+    
+    // Toggle do submenu atual
+    navItem.classList.toggle('active', !isActive);
+}
+
+// Marcar item ativo baseado na URL atual
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+            const navItem = link.closest('.nav-item');
+            if (navItem) {
+                navItem.classList.add('active');
+            }
+        }
+    });
+});
+</script>
+
+{% block extrajs %}{% endblock %}
+
+</body>
+</html>

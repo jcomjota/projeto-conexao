@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - Conexão Adventure{% endblock %}
+
+{% block content %}
+<h1>{{ category.name }}</h1>
+<div class="row">
+    {% for adventure in adventures %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ adventure.title }}</h5>
+                <p class="card-text">{{ adventure.short_description }}</p>
+                <a href="{% url 'adventures:detail' adventure.slug %}" class="btn btn-primary">Ver Detalhes</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Termos de Uso - Conexão Adventure{% endblock %}
+
+{% block content %}
+<section class="inner-banner">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-12 text-center">
+                <div class="inner-banner-content">
+                    <h1>Termos de Uso</h1>
+                    <p>Leia nossos termos e condições de uso</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="terms-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                {% if page %}
+                    <div class="page-content">
+                        {{ page.content|safe }}
+                    </div>
+                {% else %}
+                    <div class="terms-content">
+                        <h2>1. Aceitação dos Termos</h2>
+                        <p>Ao utilizar nossos serviços, você concorda com os termos e condições estabelecidos neste documento.</p>
+
+                        <h2>2. Descrição dos Serviços</h2>
+                        <p>A Conexão Adventure oferece serviços de turismo de aventura, incluindo trilhas, cachoeiras e atividades outdoor.</p>
+
+                        <h2>3. Responsabilidades do Usuário</h2>
+                        <ul>
+                            <li>Fornecer informações verdadeiras durante o cadastro</li>
+                            <li>Seguir todas as regras de segurança</li>
+                            <li>Respeitar outros participantes e o meio ambiente</li>
+                            <li>Pagar pelos serviços contratados</li>
+                        </ul>
+
+                        <h2>4. Responsabilidades da Empresa</h2>
+                        <ul>
+                            <li>Fornecer equipamentos de segurança adequados</li>
+                            <li>Manter guias qualificados</li>
+                            <li>Garantir seguro de acidentes pessoais</li>
+                            <li>Proteger dados pessoais dos usuários</li>
+                        </ul>
+
+                        <h2>5. Política de Cancelamento</h2>
+                        <p>Cancelamentos devem ser feitos com pelo menos 48 horas de antecedência para reembolso integral.</p>
+
+                        <h2>6. Limitação de Responsabilidade</h2>
+                        <p>A empresa não se responsabiliza por danos decorrentes do não cumprimento das regras de segurança pelo participante.</p>
+
+                        <h2>7. Modificações dos Termos</h2>
+                        <p>Estes termos podem ser modificados a qualquer momento. As alterações serão comunicadas aos usuários.</p>
+
+                        <h2>8. Lei Aplicável</h2>
+                        <p>Estes termos são regidos pelas leis brasileiras e qualquer disputa será resolvida nos tribunais de São Paulo.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

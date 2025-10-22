@@ -1,0 +1,348 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.next-adventure-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
+.adventure-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.adventure-header h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: var(--dark-bg);
+    margin: 0;
+    flex: 1;
+}
+
+.adventure-date {
+    background: var(--gradient-bg);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.chart-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    align-items: center;
+}
+
+.adventure-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    text-align: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: var(--border-radius);
+}
+
+.info-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.info-number.confirmed { color: var(--secondary-color); }
+.info-number.pending { color: #ffc107; }
+.info-number.available { color: var(--primary-color); }
+
+.info-label {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: var(--border-radius);
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--gradient-bg);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    color: white;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <!-- Estatísticas gerais -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_adventures }}</div>
+            <div class="stat-label">Aventuras Ativas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_bookings }}</div>
+            <div class="stat-label">Reservas Totais</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_users }}</div>
+            <div class="stat-label">Usuários Cadastrados</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ pending_payments }}</div>
+            <div class="stat-label">Pagamentos Pendentes</div>
+        </div>
+    </div>
+    
+    <!-- Próxima aventura -->
+    {% if next_adventure %}
+    <div class="next-adventure-card">
+        <div class="adventure-header">
+            <h2><i class="fas fa-mountain"></i> Próxima Aventura: {{ next_adventure.adventure.title }}</h2>
+            <div class="adventure-date">
+                <i class="fas fa-calendar"></i> {{ next_adventure.start_date|date:"d/m/Y" }}
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="adventure-info">
+                <div class="info-item">
+                    <div class="info-number confirmed">{{ next_adventure.confirmed_bookings }}</div>
+                    <div class="info-label">Confirmadas</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-number pending">{{ next_adventure.pending_bookings }}</div>
+                    <div class="info-label">Aguardando Pagamento</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-number available">{{ next_adventure.available_slots }}</div>
+                    <div class="info-label">Vagas Restantes</div>
+                </div>
+            </div>
+            
+            <div class="chart-wrapper">
+                {% if next_adventure.total_bookings > 0 %}
+                <canvas id="bookingChart" width="300" height="300"></canvas>
+                {% else %}
+                <div class="no-data">
+                    <i class="fas fa-chart-pie" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem;"></i>
+                    <p>Nenhuma reserva ainda</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-data">
+        <i class="fas fa-calendar-times" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem;"></i>
+        <h3>Nenhuma aventura programada</h3>
+        <p>Adicione eventos para suas aventuras para começar a receber reservas.</p>
+    </div>
+    {% endif %}
+    
+    <!-- Ações rápidas -->
+    <div class="quick-actions">
+        <a href="{% url 'admin:adventures_adventure_add' %}" class="action-btn">
+            <i class="fas fa-plus"></i>
+            Nova Aventura
+        </a>
+        <a href="{% url 'admin:bookings_adventureevent_add' %}" class="action-btn">
+            <i class="fas fa-calendar-plus"></i>
+            Novo Evento
+        </a>
+        <a href="{% url 'admin:bookings_booking_changelist' %}" class="action-btn">
+            <i class="fas fa-list"></i>
+            Ver Reservas
+        </a>
+        <a href="{% url 'admin:users_customuser_changelist' %}" class="action-btn">
+            <i class="fas fa-users"></i>
+            Gerenciar Usuários
+        </a>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuItems = document.querySelectorAll('.menu-item');
+    
+    menuItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            const submenu = this.querySelector('.submenu');
+            if (submenu) {
+                e.preventDefault();
+                submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+                this.classList.toggle('active');
+            }
+        });
+    });
+    
+    {% if next_adventure and next_adventure.total_bookings > 0 %}
+    const ctx = document.getElementById('bookingChart').getContext('2d');
+    
+    const data = {
+        labels: ['Confirmadas', 'Aguardando Pagamento', 'Vagas Restantes'],
+        datasets: [{
+            data: [
+                {{ next_adventure.confirmed_bookings }},
+                {{ next_adventure.pending_bookings }},
+                {{ next_adventure.available_slots }}
+            ],
+            backgroundColor: [
+                '#4caf50',  // Verde para confirmadas
+                '#ffc107',  // Amarelo para pendentes
+                '#ff6b35'   // Laranja para disponíveis
+            ],
+            borderWidth: 3,
+            borderColor: '#fff'
+        }]
+    };
+    
+    const config = {
+        type: 'doughnut',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        font: {
+                            family: 'Poppins',
+                            size: 12,
+                            weight: '600'
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: {
+                        family: 'Poppins',
+                        size: 14,
+                        weight: '600'
+                    },
+                    bodyFont: {
+                        family: 'Poppins',
+                        size: 12
+                    },
+                    cornerRadius: 8
+                }
+            },
+            cutout: '60%',
+            animation: {
+                animateRotate: true,
+                duration: 1000
+            }
+        }
+    };
+    
+    new Chart(ctx, config);
+    {% endif %}
+});
+</script>
+{% endblock %}

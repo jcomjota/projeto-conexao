@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Regras Gerais - Conexão Adventure{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section Original -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Regras Gerais</h1>
+            <p class="hero-subtitle">Conheça as principais diretrizes para sua segurança e experiência</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <i class="fas fa-shield-alt"></i>
+                    <span class="stat-number">100%</span>
+                    <span class="stat-text">Segurança</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-leaf"></i>
+                    <span class="stat-number">100%</span>
+                    <span class="stat-text">Eco</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-users"></i>
+                    <span class="stat-number">+2k</span>
+                    <span class="stat-text">Aventureiros</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Process Section adaptada para regras -->
+<section class="process-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Regras Essenciais</h2>
+            <p>Confira as principais regras para garantir uma aventura segura e responsável</p>
+        </div>
+        <div class="process-timeline">
+            <div class="process-step">
+                <div class="step-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="step-content">
+                    <h3>1. Segurança</h3>
+                    <p>Siga sempre as orientações dos guias e utilize os equipamentos de segurança fornecidos.</p>
+                    <div class="step-features">
+                        <span><i class="fas fa-check"></i> Guias treinados</span>
+                        <span><i class="fas fa-check"></i> Equipamentos certificados</span>
+                    </div>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="step-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="step-content">
+                    <h3>2. Respeito ao Meio Ambiente</h3>
+                    <p>Não deixe lixo nas trilhas e respeite a fauna e flora local.</p>
+                    <div class="step-features">
+                        <span><i class="fas fa-check"></i> Não polua</span>
+                        <span><i class="fas fa-check"></i> Preserve a natureza</span>
+                    </div>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="step-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="step-content">
+                    <h3>3. Pontualidade</h3>
+                    <p>Chegue no horário marcado para não atrasar o grupo.</p>
+                    <div class="step-features">
+                        <span><i class="fas fa-check"></i> Respeite o cronograma</span>
+                    </div>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="step-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="step-content">
+                    <h3>4. Condicionamento Físico</h3>
+                    <p>Certifique-se de que está em condições físicas adequadas para a atividade escolhida.</p>
+                    <div class="step-features">
+                        <span><i class="fas fa-check"></i> Consulte seu médico</span>
+                        <span><i class="fas fa-check"></i> Escolha atividades compatíveis</span>
+                    </div>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="step-icon">
+                    <i class="fas fa-hiking"></i>
+                </div>
+                <div class="step-content">
+                    <h3>5. Equipamentos</h3>
+                    <p>Use roupas e calçados apropriados para a atividade e condições climáticas.</p>
+                    <div class="step-features">
+                        <span><i class="fas fa-check"></i> Roupas adequadas</span>
+                        <span><i class="fas fa-check"></i> Calçados fechados</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Info Section -->
+<section class="info-section">
+    <div class="container">
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3>Compromisso com a Segurança</h3>
+                <p>Nossa prioridade é garantir a integridade de todos os participantes em cada aventura.</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-recycle"></i>
+                </div>
+                <h3>Consciência Ambiental</h3>
+                <p>Atitudes responsáveis para preservar o meio ambiente fazem parte do nosso dia a dia.</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-hands-helping"></i>
+                </div>
+                <h3>Colaboração</h3>
+                <p>O respeito e a colaboração entre os aventureiros tornam a experiência mais rica e segura.</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3>Organização</h3>
+                <p>Planejamento e pontualidade são essenciais para o sucesso de cada atividade.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Pronto para seguir as regras e viver sua aventura?</h2>
+            <p>Entre em contato para tirar dúvidas ou conferir nossa programação!</p>
+            <div class="cta-buttons">
+                <a href="{% url 'content:how_it_works' %}" class="btn btn-primary">Ver Programação</a>
+                <a href="{% url 'content:contact' %}" class="btn btn-outline">Falar Conosco</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

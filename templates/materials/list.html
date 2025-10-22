@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Downloads - Conexão Adventure{% endblock %}
+
+{% block content %}
+
+<main>
+    <!-- Hero Section -->
+    <section class="downloads-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Central de Downloads</h1>
+                <p>Acesse nossa biblioteca completa de materiais, documentos, vídeos e recursos para sua aventura</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ total_materials }}+</span>
+                        <span class="stat-text">Materiais</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ videos_count }}+</span>
+                        <span class="stat-text">Vídeos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ documents_count }}+</span>
+                        <span class="stat-text">Documentos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="downloads-search">
+        <div class="container">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Pesquisar materiais... (nome, descrição, tipo)" autocomplete="off" value="{{ search_query }}">
+                    <button id="clearSearch" class="clear-search" style="{% if not search_query %}display: none;{% endif %}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="search-results-info">
+                    <span id="searchResults">
+                        {% if search_query %}
+                            {{ materials.count }} resultado(s) para "{{ search_query }}"
+                        {% else %}
+                            Mostrando todos os materiais
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Navigation -->
+    <section class="downloads-categories">
+        <div class="container">
+            <div class="category-nav">
+                <button class="category-btn {% if not category_filter or category_filter == 'all' %}active{% endif %}" data-category="all">
+                    <i class="fas fa-th-large"></i>
+                    <span>Todos</span>
+                </button>
+                {% for category in categories %}
+                <button class="category-btn {% if category_filter == category.slug %}active{% endif %}" data-category="{{ category.slug }}">
+                    <i class="{{ category.icon|default:'fas fa-folder' }}"></i>
+                    <span>{{ category.name }}</span>
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Downloads Grid -->
+    <section class="downloads-grid">
+        <div class="container">
+            <div class="grid-container">
+                {% for material in materials %}
+                <div class="download-item" data-category="{{ material.category.slug }}">
+                    <div class="item-thumbnail">
+                        {% if material.thumbnail %}
+                            <img src="{{ material.thumbnail.url }}" alt="{{ material.title }}">
+                        {% else %}
+                            {% if material.file_type == 'pdf' or material.file_type == 'document' %}
+                                <i class="fas fa-file-pdf"></i>
+                            {% elif material.file_type == 'video' %}
+                                <i class="fas fa-play-circle"></i>
+                            {% elif material.file_type == 'image' %}
+                                <i class="fas fa-images"></i>
+                            {% elif material.file_type == 'presentation' %}
+                                <i class="fas fa-file-powerpoint"></i>
+                            {% elif material.file_type == 'link' %}
+                                <i class="fas fa-external-link-alt"></i>
+                            {% else %}
+                                <i class="fas fa-file"></i>
+                            {% endif %}
+                        {% endif %}
+                        <div class="item-overlay">
+                            <button class="download-btn" data-item="{{ material.id }}" 
+                                    data-title="{{ material.title }}" 
+                                    data-description="{{ material.description }}">
+                                {% if material.file_type == 'link' %}
+                                    <i class="fas fa-external-link-alt"></i>
+                                {% else %}
+                                    <i class="fas fa-download"></i>
+                                {% endif %}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="item-info">
+                        <h3>{{ material.title }}</h3>
+                        <p>{{ material.description|truncatechars:100 }}</p>
+                        <div class="item-meta">
+                            <span class="file-type">
+                                {% if material.file_type == 'pdf' %}PDF
+                                {% elif material.file_type == 'document' %}DOC
+                                {% elif material.file_type == 'video' %}MP4
+                                {% elif material.file_type == 'image' %}IMG
+                                {% elif material.file_type == 'presentation' %}PPT
+                                {% elif material.file_type == 'link' %}LINK
+                                {% else %}{{ material.file_extension|upper }}
+                                {% endif %}
+                            </span>
+                            <span class="file-size">{{ material.file_size_formatted }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h3>Nenhum material encontrado</h3>
+                    <p>Tente ajustar os filtros ou termo de busca.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Modal de Cadastro -->
+<div id="downloadModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Acesso ao Material</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="modal-info">
+                <div class="download-preview">
+                    <i class="fas fa-file-download"></i>
+                    <h3 id="downloadTitle">Título do Arquivo</h3>
+                    <p id="downloadDescription">Descrição do arquivo</p>
+                </div>
+                <p>Para fazer o download, precisamos de algumas informações básicas:</p>
+            </div>
+            <form id="downloadForm" class="download-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">Nome *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Sobrenome *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Telefone (opcional)</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="newsletter" name="newsletter">
+                        <span class="checkmark"></span>
+                        Quero receber novidades e promoções da Conexão Adventure
+                    </label>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <span class="checkmark"></span>
+                        Concordo com os Termos de Uso e Política de Privacidade
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-download"></i>
+                    Fazer Download
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal">
+    <div class="modal-content success-modal">
+        <div class="modal-body">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Download Iniciado!</h2>
+            <p>Obrigado por se cadastrar. Seu download será iniciado automaticamente.</p>
+            <button class="btn btn-primary" onclick="closeSuccessModal()">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Funcionalidade de busca e filtros
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    
+    // Busca
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        if (query) {
+            clearSearch.style.display = 'block';
+        } else {
+            clearSearch.style.display = 'none';
+        }
+        // Implementar busca AJAX aqui se necessário
+    });
+    
+    // Limpar busca
+    clearSearch.addEventListener('click', function() {
+        searchInput.value = '';
+        this.style.display = 'none';
+        // Redirecionar para limpar filtros
+        window.location.href = '{% url "materials:list" %}';
+    });
+    
+    // Filtros de categoria
+    categoryBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const category = this.dataset.category;
+            const url = new URL(window.location);
+            
+            if (category === 'all') {
+                url.searchParams.delete('category');
+            } else {
+                url.searchParams.set('category', category);
+            }
+            
+            window.location.href = url.toString();
+        });
+    });
+    
+    // Modal de download
+    const downloadBtns = document.querySelectorAll('.download-btn');
+    const downloadModal = document.getElementById('downloadModal');
+    const downloadTitle = document.getElementById('downloadTitle');
+    const downloadDescription = document.getElementById('downloadDescription');
+    const downloadForm = document.getElementById('downloadForm');
+    
+    downloadBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const materialId = this.dataset.item;
+            const title = this.dataset.title;
+            const description = this.dataset.description;
+            
+            downloadTitle.textContent = title;
+            downloadDescription.textContent = description;
+            downloadForm.dataset.materialId = materialId;
+            
+            downloadModal.style.display = 'block';
+        });
+    });
+    
+    // Fechar modal
+    document.querySelector('.close').addEventListener('click', function() {
+        downloadModal.style.display = 'none';
+    });
+    
+    // Submit do formulário
+    downloadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const materialId = this.dataset.materialId;
+        
+        // Aqui você pode implementar o envio dos dados via AJAX
+        // Por enquanto, vamos apenas redirecionar para o download
+        window.location.href = `{% url "materials:download" pk=0 %}`.replace('0', materialId);
+    });
+});
+</script>
+
+{% endblock %} 

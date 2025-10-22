@@ -1,0 +1,53 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <style>
+        .upload-container {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        
+        #loading {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+{% endblock %}
+
+{% block after_field_sets %}
+    {{ block.super }}
+    <div class="upload-container">
+        <h2>Imagens da Aventura</h2>
+        <p>Arraste imagens aqui ou clique no botão abaixo para selecionar</p>
+        <input type="file" id="id_images" name="images" multiple accept="image/*">
+        <div id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Carregando...</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block admin_change_form_document_ready %}
+    {{ block.super }}
+    <script src="{% static 'admin/js/adventure_images.js' %}"></script>
+{% endblock %}

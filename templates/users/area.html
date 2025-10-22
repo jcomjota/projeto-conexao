@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Área do Aventureiro - Conexão Adventure{% endblock %}
+
+{% block content %}
+
+<main>
+    <section class="page-header">
+        <div class="container">
+            <h1>Área do Aventureiro</h1>
+            <p>Acesse sua conta para visualizar suas aventuras, informações de eventos, documentação e muito mais.</p>
+        </div>
+    </section>
+
+    <section class="login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <div class="login-icon">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <h2>Entrar na Sua Conta</h2>
+                        <p>Insira seus dados para acessar a área do aventureiro</p>
+                    </div>
+                    
+                    {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <form class="login-form" id="loginForm" method="post" action="{% url 'users:login' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="email">
+                                <i class="fas fa-envelope"></i>
+                                E-mail
+                            </label>
+                            <input type="email" id="email" name="email" required placeholder="Digite seu e-mail">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">
+                                <i class="fas fa-lock"></i>
+                                Senha
+                            </label>
+                            <div class="password-input-group">
+                                <input type="password" id="password" name="password" required placeholder="Digite sua senha">
+                                <button type="button" class="toggle-password" onclick="togglePassword()">
+                                    <i class="fas fa-eye" id="toggleIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="remember" name="remember">
+                                <span class="checkmark"></span>
+                                Lembrar de mim
+                            </label>
+                            <a href="#" class="forgot-password" onclick="showForgotPassword()">Esqueci minha senha</a>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Entrar
+                        </button>
+                    </form>
+                    
+                    <div class="login-help">
+                        <p>Não tem uma conta? <a href="{% url 'content:contact' %}">Entre em contato conosco</a></p>
+                        <p class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            Sua conta é criada automaticamente quando você se inscreve em uma aventura
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="login-benefits">
+                    <h3>O que você encontra na Área do Aventureiro:</h3>
+                    <div class="benefits-grid">
+                        <div class="benefit-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <h4>Suas Aventuras</h4>
+                            <p>Visualize todas as aventuras que você se inscreveu e seus status</p>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <h4>Informações do Seguro</h4>
+                            <p>Acesse os dados da sua cobertura de seguro para cada aventura</p>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-list-check"></i>
+                            <h4>Checklist Personalizado</h4>
+                            <p>Lista personalizada do que levar para cada tipo de aventura</p>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-file-download"></i>
+                            <h4>Documentos</h4>
+                            <p>Download de termos, comprovantes e documentação necessária</p>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-users"></i>
+                            <h4>Informações do Grupo</h4>
+                            <p>Conheça outros participantes e detalhes da sua aventura</p>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <h4>Detalhes da Trilha</h4>
+                            <p>Mapas, pontos de encontro e informações específicas da trilha</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Modal Esqueci Senha -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Recuperar Senha</h2>
+                <button class="close" onclick="closeForgotPassword()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Digite seu e-mail cadastrado para receber as instruções de recuperação de senha:</p>
+                <form id="forgotPasswordForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="forgotEmail">
+                            <i class="fas fa-envelope"></i>
+                            E-mail
+                        </label>
+                        <input type="email" id="forgotEmail" name="forgotEmail" required placeholder="Digite seu e-mail">
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="closeForgotPassword()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Enviar Instruções
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// Função para mostrar/esconder senha
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+// Função para mostrar modal de recuperação de senha
+function showForgotPassword() {
+    document.getElementById('forgotPasswordModal').style.display = 'block';
+}
+
+// Função para fechar modal de recuperação de senha
+function closeForgotPassword() {
+    document.getElementById('forgotPasswordModal').style.display = 'none';
+    document.getElementById('forgotPasswordForm').reset();
+}
+
+// Fechar modal ao clicar fora
+window.onclick = function(event) {
+    const modal = document.getElementById('forgotPasswordModal');
+    if (event.target === modal) {
+        closeForgotPassword();
+    }
+}
+
+// Processar formulário de recuperação de senha
+document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('{% url "users:forgot_password" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            closeForgotPassword();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao enviar solicitação. Tente novamente.');
+    });
+});
+
+// Auto-focus no campo de usuário
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('email').focus();
+});
+</script>
+
+{% endblock %} 

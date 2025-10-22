@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ adventure.title }} - Conexão Adventure{% endblock %}
+
+{% block content %}
+    <!-- Hero Section com Background Slideshow -->
+    <section class="adventure-hero-new">
+        <div class="hero-slideshow">
+            {% if adventure.main_image %}
+            <div class="hero-slide active" style="background-image: url('{{ adventure.main_image.url }}')"></div>
+            {% endif %}
+            {% for image in adventure.images.all|slice:":2" %}
+            <div class="hero-slide" style="background-image: url('{{ image.image.url }}')"></div>
+            {% endfor %}
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content-new">
+                <h1>{{ adventure.title }}</h1>
+                <p class="hero-description">{{ adventure.short_description }}</p>
+                
+                <div class="adventure-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <span class="label">Localização</span>
+                            <span class="value">{{ adventure.location }}</span>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <span class="label">Duração</span>
+                            <span class="value">{{ adventure.duration_hours }} horas</span>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-signal"></i>
+                        <div>
+                            <span class="label">Nível</span>
+                            <span class="value">{{ adventure.get_difficulty_display }}</span>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <span class="label">Grupo</span>
+                            <span class="value">{{ adventure.min_participants }}-{{ adventure.max_participants }} pessoas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="#booking" class="btn btn-primary btn-large">
+                        <i class="fas fa-calendar-plus"></i>
+                        Reservar Agora
+                    </a>
+                    <a href="#media" class="btn btn-outline btn-large">
+                        <i class="fas fa-play"></i>
+                        Ver Fotos e Vídeos
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slideshow Controls -->
+        <div class="hero-slideshow-controls">
+            <button class="hero-prev"><i class="fas fa-chevron-left"></i></button>
+            <button class="hero-next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        
+        <!-- Slideshow Indicators -->
+        <div class="hero-indicators">
+            <button class="indicator active" data-slide="0"></button>
+            {% if adventure.images.all|length > 0 %}
+                {% for image in adventure.images.all|slice:":2" %}
+                <button class="indicator" data-slide="{{ forloop.counter }}"></button>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Adventure Stats -->
+    <section class="adventure-stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <h3>4.9/5</h3>
+                    <p>Avaliação dos Aventureiros</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-hiking"></i>
+                    <h3>500+</h3>
+                    <p>Aventuras Realizadas</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-medal"></i>
+                    <h3>100%</h3>
+                    <p>Satisfação Garantida</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Media Section (Fotos e Vídeos) -->
+    <section id="media" class="adventure-media">
+        <div class="container">
+            <div class="section-header">
+                <h2>Galeria de Fotos e Vídeos</h2>
+                <p>Veja como é esta aventura incrível através dos olhos de quem já viveu esta experiência</p>
+            </div>
+            
+            <div class="media-grid">
+                <!-- Photo Gallery -->
+                <div class="photo-gallery">
+                    <h3><i class="fas fa-camera"></i> Galeria de Fotos</h3>
+                    <div class="gallery-slideshow">
+                        <div class="gallery-main">
+                            {% if adventure.main_image %}
+                            <img src="{{ adventure.main_image.url }}" alt="{{ adventure.title }}" class="main-photo">
+                            {% endif %}
+                            <div class="photo-nav">
+                                <button class="photo-prev"><i class="fas fa-chevron-left"></i></button>
+                                <button class="photo-next"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="photo-counter">
+                                <span class="current">1</span> / <span class="total">{{ adventure.images.count|add:1 }}</span>
+                            </div>
+                        </div>
+                        <div class="gallery-thumbnails">
+                            {% if adventure.main_image %}
+                            <div class="thumbnail active">
+                                <img src="{{ adventure.main_image.url }}" alt="Foto Principal">
+                            </div>
+                            {% endif %}
+                            {% for image in adventure.images.all %}
+                            <div class="thumbnail">
+                                <img src="{{ image.image.url }}" alt="{{ image.title|default:'Foto '|add:forloop.counter }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Section -->
+                <div class="video-section">
+                    <h3><i class="fas fa-video"></i> Vídeo da Aventura</h3>
+                    <div class="video-container">
+                        <div class="video-placeholder">
+                            <div class="video-play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            {% if adventure.main_image %}
+                            <img src="{{ adventure.main_image.url }}" alt="Vídeo {{ adventure.title }}">
+                            {% endif %}
+                            <div class="video-overlay">
+                                <h4>Experiência Completa na {{ adventure.title }}</h4>
+                                <p>Assista ao vídeo e veja todos os momentos desta aventura inesquecível</p>
+                                <span class="video-duration">
+                                    <i class="fas fa-clock"></i> 3:45
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Adventure Details -->
+    <section class="adventure-details">
+        <div class="container">
+            <div class="details-grid">
+                <!-- Main Content -->
+                <div class="details-main">
+                    <!-- About Section -->
+                    <div class="detail-card">
+                        <div class="card-header">
+                            <i class="fas fa-info-circle"></i>
+                            <h3>Sobre esta Aventura</h3>
+                        </div>
+                        <div class="card-content">
+                            {{ adventure.description|safe }}
+                        </div>
+                    </div>
+
+                    <!-- What's Included -->
+                    <div class="detail-card">
+                        <div class="card-header">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>O que está Incluído</h3>
+                        </div>
+                        <div class="card-content">
+                            {{ adventure.what_includes|safe }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Sidebar -->
+                <div class="booking-sidebar">
+                    <!-- Price Card -->
+                    <div id="booking" class="booking-card">
+                        <div class="price-header">
+                            <h3>Reserve sua Aventura</h3>
+                            <div class="price-badge">
+                                <span class="amount">R$ {{ adventure.current_price }}</span>
+                                <span class="per-person">por pessoa</span>
+                            </div>
+                        </div>
+                        
+                        <div class="booking-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-users"></i> Grupo</label>
+                                <div class="group-info">
+                                    <span class="group-range">Mínimo: {{ adventure.min_participants }} pessoas | Máximo: {{ adventure.max_participants }} pessoas</span>
+                                </div>
+                            </div>
+                            
+                            {% if adventure.next_event %}
+                            <div class="info-list">
+                                <div class="info-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <div>
+                                        <span class="label">Próxima Data</span>
+                                        <span class="value">{{ adventure.next_event.date|date:"d/m/Y" }}</span>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    <div>
+                                        <span class="label">Horário</span>
+                                        <span class="value">{{ adventure.next_event.start_time|time:"H:i" }}{% if adventure.next_event.end_time %} às {{ adventure.next_event.end_time|time:"H:i" }}{% endif %}</span>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <div>
+                                        <span class="label">Ponto de Encontro</span>
+                                        <span class="value">{{ adventure.meeting_point|default:"A definir" }}</span>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-car"></i>
+                                    <div>
+                                        <span class="label">Transporte</span>
+                                        <span class="value">Incluso (ida e volta)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="{% url 'bookings:registration_start' event_id=adventure.next_event.id %}" class="btn btn-primary btn-block">
+                                <i class="fas fa-calendar-plus"></i>
+                                Reservar
+                            </a>
+                            {% else %}
+                            <div class="no-events">
+                                <p><i class="fas fa-calendar-times"></i> Nenhum evento disponível no momento</p>
+                            </div>
+                            <a href="https://wa.me/5554996294491" class="btn btn-primary btn-block">
+                                Faça sua reserva
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Contact Card -->
+                    <div class="contact-card">
+                        <h3>Dúvidas?</h3>
+                        <p>Entre em contato conosco para mais informações</p>
+                        <div class="contact-buttons">
+                            <a href="https://wa.me/5554993216261" class="btn btn-success">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp
+                            </a>
+                            <a href="{% url 'content:contact' %}" class="btn btn-secondary">
+                                <i class="fas fa-envelope"></i>
+                                E-mail
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What to Bring & Safety Requirements in Full Width -->
+    <section class="bring-safety-full-width">
+        <div class="container">
+            <div class="bring-safety-columns">
+                <!-- What to Bring -->
+                <div class="detail-card">
+                    <div class="card-header">
+                        <i class="fas fa-backpack"></i>
+                        <h3>O que Levar</h3>
+                    </div>
+                    <div class="card-content">
+                        {{ adventure.what_to_bring|safe }}
+                    </div>
+                </div>
+
+                <!-- Safety Requirements -->
+                <div class="detail-card">
+                    <div class="card-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Requisitos e Segurança</h3>
+                    </div>
+                    <div class="card-content">
+                        {{ adventure.safety_requirements|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

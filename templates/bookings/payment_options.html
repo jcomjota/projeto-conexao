@@ -1,0 +1,430 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Opções de Pagamento - {{ booking.event.adventure.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .booking-header {
+        background: var(--gradient-bg);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .booking-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .booking-detail {
+        text-align: center;
+    }
+    
+    .booking-detail i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .welcome-back {
+        background: #e8f5e8;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--secondary-color);
+    }
+    
+    .welcome-back h3 {
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .payment-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .payment-option {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .payment-option:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .payment-option.pix {
+        background: linear-gradient(135deg, #00ff88, #00cc6a);
+        color: white;
+        border-color: #00cc6a;
+    }
+    
+    .payment-option.credit-card {
+        background: linear-gradient(135deg, #4285f4, #1a73e8);
+        color: white;
+        border-color: #1a73e8;
+    }
+    
+    .payment-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .payment-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    
+    .payment-description {
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+    }
+    
+    .payment-features {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1.5rem;
+    }
+    
+    .payment-features li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .payment-features li:last-child {
+        border-bottom: none;
+    }
+    
+    .payment-features i {
+        margin-right: 0.5rem;
+    }
+    
+    .btn-select-payment {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid white;
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn-select-payment:hover {
+        background: white;
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .security-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 2rem 0;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .security-info h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .security-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .security-feature {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .security-feature i {
+        color: var(--secondary-color);
+        font-size: 1.2rem;
+    }
+    
+    .price-summary {
+        background: #fff3cd;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 2rem 0;
+        border: 1px solid #ffeaa7;
+    }
+    
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #ffeaa7;
+    }
+    
+    .price-row:last-child {
+        border-bottom: none;
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+    }
+    
+    .instant-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ff6b6b;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+    
+    .recommended-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #ffd93d;
+        color: #333;
+        padding: 0.25rem 0.5rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+        .payment-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .payment-options {
+            grid-template-columns: 1fr;
+        }
+        
+        .booking-details {
+            grid-template-columns: 1fr;
+        }
+        
+        .security-features {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="booking-header">
+        <h2>{{ booking.event.adventure.title }}</h2>
+        <div class="booking-details">
+            <div class="booking-detail">
+                <i class="fas fa-calendar-alt"></i>
+                <div>{{ booking.event.date|date:"d/m/Y" }}</div>
+                <small>Data da Aventura</small>
+            </div>
+            <div class="booking-detail">
+                <i class="fas fa-clock"></i>
+                <div>{{ booking.event.start_time|time:"H:i" }}</div>
+                <small>Horário</small>
+            </div>
+            <div class="booking-detail">
+                <i class="fas fa-users"></i>
+                <div>{{ booking.participants_count }} pessoa{{ booking.participants_count|pluralize }}</div>
+                <small>Participantes</small>
+            </div>
+            <div class="booking-detail">
+                <i class="fas fa-dollar-sign"></i>
+                <div>R$ {{ booking.total_price }}</div>
+                <small>Valor Total</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="welcome-back">
+        <h3><i class="fas fa-user-check"></i> Bem-vindo de volta, {{ booking.user.get_full_name }}!</h3>
+        <p>Como você já é nosso cliente, pode fazer o pagamento imediatamente para garantir sua vaga. Escolha a forma de pagamento que preferir:</p>
+    </div>
+    
+    <div class="price-summary">
+        <h3><i class="fas fa-receipt"></i> Resumo do Pagamento</h3>
+        <div class="price-row">
+            <span>{{ booking.event.adventure.title }} ({{ booking.participants_count }}x)</span>
+            <span>R$ {{ booking.event.final_price }} x {{ booking.participants_count }}</span>
+        </div>
+        <div class="price-row">
+            <span><strong>Total a Pagar</strong></span>
+            <span><strong>R$ {{ booking.total_price }}</strong></span>
+        </div>
+    </div>
+    
+    <div class="payment-options">
+        <!-- PIX -->
+        <div class="payment-option pix">
+            <div class="instant-badge">INSTANTÂNEO</div>
+            <div class="payment-icon">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <div class="payment-title">PIX</div>
+            <div class="payment-description">
+                Pagamento instantâneo via PIX. Escaneie o QR Code ou copie a chave.
+            </div>
+            <ul class="payment-features">
+                <li><i class="fas fa-bolt"></i> Confirmação instantânea</li>
+                <li><i class="fas fa-mobile-alt"></i> Use qualquer app do banco</li>
+                <li><i class="fas fa-shield-alt"></i> 100% seguro</li>
+                <li><i class="fas fa-gift"></i> Sem taxas extras</li>
+            </ul>
+            <a href="{% url 'bookings:pix_payment' booking_id=booking.id %}" class="btn-select-payment">
+                <i class="fas fa-qrcode"></i> Pagar com PIX
+            </a>
+        </div>
+        
+        <!-- Cartão de Crédito -->
+        <div class="payment-option credit-card">
+            <div class="recommended-badge">RECOMENDADO</div>
+            <div class="payment-icon">
+                <i class="fas fa-credit-card"></i>
+            </div>
+            <div class="payment-title">Cartão de Crédito</div>
+            <div class="payment-description">
+                Parcele em até 5x sem juros ou pague à vista com desconto.
+            </div>
+            <ul class="payment-features">
+                <li><i class="fas fa-calendar-alt"></i> Até 5x sem juros</li>
+                <li><i class="fas fa-percentage"></i> 5% desconto à vista</li>
+                <li><i class="fas fa-shield-alt"></i> Transação segura</li>
+                <li><i class="fas fa-undo"></i> Estorno fácil se necessário</li>
+            </ul>
+            <a href="{% url 'bookings:credit_card_payment' booking_id=booking.id %}" class="btn-select-payment">
+                <i class="fas fa-credit-card"></i> Pagar com Cartão
+            </a>
+        </div>
+    </div>
+    
+    <div class="security-info">
+        <h3><i class="fas fa-shield-alt"></i> Segurança Garantida</h3>
+        <p>Todos os pagamentos são processados com total segurança. Seus dados estão protegidos.</p>
+        
+        <div class="security-features">
+            <div class="security-feature">
+                <i class="fas fa-lock"></i>
+                <span>Criptografia SSL</span>
+            </div>
+            <div class="security-feature">
+                <i class="fas fa-shield-check"></i>
+                <span>PCI DSS Certificado</span>
+            </div>
+            <div class="security-feature">
+                <i class="fas fa-user-shield"></i>
+                <span>Dados Protegidos</span>
+            </div>
+            <div class="security-feature">
+                <i class="fas fa-headset"></i>
+                <span>Suporte 24/7</span>
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 2rem;">
+        <p class="text-muted">
+            <i class="fas fa-info-circle"></i>
+            <strong>Importante:</strong> Sua vaga será garantida apenas após a confirmação do pagamento.
+        </p>
+        
+        <div style="margin-top: 1rem;">
+            <a href="https://wa.me/5554993216261?text=Olá! Estou na página de pagamento para {{ booking.event.adventure.title }} em {{ booking.event.date|date:"d/m/Y" }}. Preciso de ajuda." 
+               class="btn btn-outline-primary" 
+               target="_blank">
+                <i class="fab fa-whatsapp"></i> Precisa de Ajuda?
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animar as opções de pagamento
+    const paymentOptions = document.querySelectorAll('.payment-option');
+    
+    // Efeito de entrada
+    paymentOptions.forEach((option, index) => {
+        option.style.opacity = '0';
+        option.style.transform = 'translateY(30px)';
+        option.style.transition = 'all 0.6s ease';
+        
+        setTimeout(() => {
+            option.style.opacity = '1';
+            option.style.transform = 'translateY(0)';
+        }, index * 200 + 300);
+    });
+    
+    // Efeito hover melhorado
+    paymentOptions.forEach(option => {
+        option.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        option.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Contador de tempo para expiração (opcional)
+    let timeLeft = 15 * 60; // 15 minutos em segundos
+    
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        
+        // Você pode exibir um timer se desejar
+        // const timerElement = document.getElementById('timer');
+        // if (timerElement) {
+        //     timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        // }
+        
+        if (timeLeft <= 0) {
+            // Redirecionar ou mostrar mensagem de expiração
+            alert('Tempo esgotado! Por favor, faça uma nova reserva.');
+            window.location.href = '/';
+        }
+        
+        timeLeft--;
+    }
+    
+    // Iniciar timer (descomente se quiser usar)
+    // setInterval(updateTimer, 1000);
+});
+</script>
+{% endblock %} 

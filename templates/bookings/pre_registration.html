@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pré-inscrição - {{ event.adventure.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pre-registration-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .event-header {
+        background: var(--gradient-bg);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .welcome-message {
+        background: #e8f5e8;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--secondary-color);
+    }
+    
+    .welcome-message h3 {
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .form-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border: 1px solid #eee;
+        border-radius: 10px;
+    }
+    
+    .form-section h4 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .form-group label.required::after {
+        content: " *";
+        color: #e74c3c;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+    }
+    
+    .form-row {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .form-row .form-group {
+        flex: 1;
+    }
+    
+    .btn-submit {
+        background: var(--gradient-bg);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+    }
+    
+    .info-alert {
+        background: #fff3cd;
+        color: #856404;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border: 1px solid #ffeaa7;
+    }
+    
+    .success-alert {
+        background: #d4edda;
+        color: #155724;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .error-alert {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border: 1px solid #f5c6cb;
+    }
+    
+    @media (max-width: 768px) {
+        .pre-registration-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pre-registration-container">
+    <div class="event-header">
+        <h2>{{ event.adventure.title }}</h2>
+        <p>{{ event.date|date:"d/m/Y" }} às {{ event.start_time|time:"H:i" }}</p>
+        <p><strong>Valor:</strong> R$ {{ event.final_price }}</p>
+    </div>
+    
+    <div class="welcome-message">
+        <h3><i class="fas fa-user-plus"></i> Bem-vindo, novo aventureiro!</h3>
+        <p>Como este é seu primeiro evento conosco, precisamos de algumas informações para sua pré-inscrição. Após enviar o formulário, nossa equipe analisará sua solicitação e entrará em contato.</p>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}error-alert{% elif message.tags == 'success' %}success-alert{% else %}info-alert{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="post" id="preRegistrationForm">
+        {% csrf_token %}
+        
+        <!-- Dados Pessoais -->
+        <div class="form-section">
+            <h4><i class="fas fa-user"></i> Dados Pessoais</h4>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first_name" class="required">Nome</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name" class="required">Sobrenome</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email" class="required">E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone" class="required">Telefone/WhatsApp</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="(00) 00000-0000" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cpf" class="required">CPF</label>
+                    <input type="text" class="form-control" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+                </div>
+                <div class="form-group">
+                    <label for="birth_date" class="required">Data de Nascimento</label>
+                    <input type="date" class="form-control" id="birth_date" name="birth_date" required>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Endereço -->
+        <div class="form-section">
+            <h4><i class="fas fa-map-marker-alt"></i> Endereço</h4>
+            
+            <div class="form-group">
+                <label for="address" class="required">Endereço Completo</label>
+                <textarea class="form-control" id="address" name="address" rows="2" placeholder="Rua, número, bairro" required></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city" class="required">Cidade</label>
+                    <input type="text" class="form-control" id="city" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label for="state" class="required">Estado</label>
+                    <select class="form-control" id="state" name="state" required>
+                        <option value="">Selecione...</option>
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espírito Santo</option>
+                        <option value="GO">Goiás</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraíba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondônia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="zip_code" class="required">CEP</label>
+                    <input type="text" class="form-control" id="zip_code" name="zip_code" placeholder="00000-000" required>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contato de Emergência -->
+        <div class="form-section">
+            <h4><i class="fas fa-phone"></i> Contato de Emergência</h4>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="emergency_contact_name" class="required">Nome do Contato</label>
+                    <input type="text" class="form-control" id="emergency_contact_name" name="emergency_contact_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="emergency_contact_phone" class="required">Telefone</label>
+                    <input type="tel" class="form-control" id="emergency_contact_phone" name="emergency_contact_phone" placeholder="(00) 00000-0000" required>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Informações Médicas -->
+        <div class="form-section">
+            <h4><i class="fas fa-heartbeat"></i> Informações Médicas</h4>
+            <p class="text-muted">Essas informações são importantes para sua segurança durante a aventura.</p>
+            
+            <div class="form-group">
+                <label for="medical_conditions">Condições Médicas</label>
+                <textarea class="form-control" id="medical_conditions" name="medical_conditions" rows="2" placeholder="Informe qualquer condição médica relevante (diabetes, hipertensão, etc.)"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="medications">Medicamentos em Uso</label>
+                <textarea class="form-control" id="medications" name="medications" rows="2" placeholder="Liste medicamentos de uso contínuo"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="allergies">Alergias</label>
+                <textarea class="form-control" id="allergies" name="allergies" rows="2" placeholder="Informe alergias conhecidas (medicamentos, alimentos, etc.)"></textarea>
+            </div>
+        </div>
+        
+        <!-- Observações -->
+        <div class="form-section">
+            <h4><i class="fas fa-comment"></i> Observações</h4>
+            
+            <div class="form-group">
+                <label for="user_notes">Comentários ou Solicitações Especiais</label>
+                <textarea class="form-control" id="user_notes" name="user_notes" rows="3" placeholder="Alguma observação especial que gostaria de compartilhar?"></textarea>
+            </div>
+        </div>
+        
+        <div class="info-alert">
+            <i class="fas fa-info-circle"></i>
+            <strong>Próximos passos:</strong> Após enviar este formulário, você receberá uma confirmação no WhatsApp e nossa equipe entrará em contato para aprovar sua inscrição. Somente após a aprovação você poderá efetuar o pagamento.
+        </div>
+        
+        <button type="submit" class="btn-submit">
+            <i class="fas fa-paper-plane"></i> Enviar Pré-inscrição
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Máscaras para os campos
+    const phoneInput = document.getElementById('phone');
+    const emergencyPhoneInput = document.getElementById('emergency_contact_phone');
+    const cpfInput = document.getElementById('cpf');
+    const zipCodeInput = document.getElementById('zip_code');
+    
+    // Máscara para telefone
+    function applyPhoneMask(input) {
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 10) {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            } else {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+    }
+    
+    // Aplicar máscaras
+    applyPhoneMask(phoneInput);
+    applyPhoneMask(emergencyPhoneInput);
+    
+    // Máscara para CPF
+    cpfInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})/, '$1-$2');
+        e.target.value = value;
+    });
+    
+    // Máscara para CEP
+    zipCodeInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{5})(\d)/, '$1-$2');
+        e.target.value = value;
+    });
+    
+    // Validação do formulário
+    const form = document.getElementById('preRegistrationForm');
+    form.addEventListener('submit', function(e) {
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.style.borderColor = '#e74c3c';
+                isValid = false;
+            } else {
+                field.style.borderColor = '#ddd';
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+        
+        // Confirmação antes de enviar
+        const confirmMessage = 'Tem certeza que deseja enviar a pré-inscrição? Verifique se todos os dados estão corretos.';
+        if (!confirm(confirmMessage)) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %} 

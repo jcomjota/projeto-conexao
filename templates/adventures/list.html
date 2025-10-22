@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Aventuras - Conexão Adventure{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <div class="container">
+            <h1>Nossa Programação</h1>
+            <p>Descubra aventuras incríveis e experiências inesquecíveis</p>
+        </div>
+    </section>
+
+    <section class="adventures">
+        <div class="container">
+            <div class="adventure-grid">
+                {% for adventure in adventures %}
+                <div class="adventure-item">
+                    <div class="adventure-image">
+                        {% if adventure.main_image %}
+                            <img src="{{ adventure.main_image.url }}" alt="{{ adventure.title }}">
+                        {% else %}
+                            <img src="{% static 'images/aventuras/capa/default.jpg' %}" alt="{{ adventure.title }}">
+                        {% endif %}
+                    </div>
+                    <div class="adventure-info">
+                        <h3>{{ adventure.title }}</h3>
+                        <div class="adventure-date">
+                            {% if adventure.next_event %}
+                                <i class="fas fa-calendar"></i> {{ adventure.next_event.start_date|date:"d/m/Y" }}
+                            {% endif %}
+                        </div>
+                        <div class="adventure-description">
+                            <p>{{ adventure.short_description }}</p>
+                        </div>
+                        <a href="{% url 'adventures:detail' adventure.slug %}" class="btn btn-primary">Ver Detalhes</a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <h3>Nenhuma aventura disponível no momento</h3>
+                    <p>Em breve teremos novas aventuras incríveis para você!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %} 

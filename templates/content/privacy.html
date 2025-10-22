@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Política de Privacidade - Conexão Adventure{% endblock %}
+
+{% block content %}
+<section class="inner-banner">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-12 text-center">
+                <div class="inner-banner-content">
+                    <h1>Política de Privacidade</h1>
+                    <p>Como coletamos, usamos e protegemos seus dados pessoais</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="privacy-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                {% if page %}
+                    <div class="page-content">
+                        {{ page.content|safe }}
+                    </div>
+                {% else %}
+                    <div class="privacy-content">
+                        <h2>1. Informações que Coletamos</h2>
+                        <p>Coletamos as seguintes informações pessoais:</p>
+                        <ul>
+                            <li>Nome completo</li>
+                            <li>Email</li>
+                            <li>Telefone</li>
+                            <li>Data de nascimento</li>
+                            <li>Documento de identidade</li>
+                            <li>Informações médicas relevantes para segurança</li>
+                            <li>Contato de emergência</li>
+                        </ul>
+
+                        <h2>2. Como Usamos suas Informações</h2>
+                        <p>Utilizamos suas informações para:</p>
+                        <ul>
+                            <li>Processar reservas e pagamentos</li>
+                            <li>Garantir sua segurança durante as atividades</li>
+                            <li>Entrar em contato sobre suas reservas</li>
+                            <li>Enviar informações sobre novas aventuras</li>
+                            <li>Cumprir obrigações legais</li>
+                        </ul>
+
+                        <h2>3. Compartilhamento de Informações</h2>
+                        <p>Não vendemos ou alugamos suas informações pessoais. Podemos compartilhar dados apenas:</p>
+                        <ul>
+                            <li>Com prestadores de serviços essenciais</li>
+                            <li>Em casos de emergência médica</li>
+                            <li>Quando exigido por lei</li>
+                        </ul>
+
+                        <h2>4. Segurança dos Dados</h2>
+                        <p>Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações contra acesso não autorizado, alteração, divulgação ou destruição.</p>
+
+                        <h2>5. Seus Direitos</h2>
+                        <p>Você tem o direito de:</p>
+                        <ul>
+                            <li>Acessar seus dados pessoais</li>
+                            <li>Corrigir informações incorretas</li>
+                            <li>Solicitar exclusão de dados</li>
+                            <li>Portabilidade de dados</li>
+                            <li>Revogar consentimento</li>
+                        </ul>
+
+                        <h2>6. Cookies</h2>
+                        <p>Utilizamos cookies para melhorar sua experiência no site. Você pode desabilitar cookies em seu navegador, mas isso pode afetar algumas funcionalidades.</p>
+
+                        <h2>7. Alterações nesta Política</h2>
+                        <p>Esta política pode ser atualizada periodicamente. Notificaremos sobre mudanças significativas.</p>
+
+                        <h2>8. Contato</h2>
+                        <p>Para questões sobre privacidade, entre em contato conosco em: privacidade@conexaoadventure.com.br</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

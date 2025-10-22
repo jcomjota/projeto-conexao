@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Conexão Adventure - Rapel - Cachoeirismo - Trekking - Acampamento{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/favicon/favicon.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/favicon/favicon.png' %}">
+    
+    <!-- CSS Original -->
+    <link rel="stylesheet" href="{% static 'styles/base.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/main.css' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    
+    <!-- Header Original -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'content:home' %}">
+                    <img src="{% static 'images/logo/logo.jpg' %}" alt="Conexão Adventure Logo">
+                </a>
+            </div>
+            <nav>
+                <ul class="menu">
+                    <li class="dropdown">
+                        <a href="#"><span>Sobre Nós</span> <i class="fas fa-chevron-down"></i></a>
+                        <ul class="submenu">
+                            <li><a href="{% url 'content:about' %}">Quem Somos / Empresa</a></li>
+                            <li><a href="{% url 'content:how_it_works' %}">Como Funciona</a></li>
+                            <li><a href="{% url 'content:general_rules' %}">Regras Gerais</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'adventures:list' %}"><span>Programação</span></a></li>
+                    <li><a href="{% url 'materials:list' %}"><span>Materiais de Apoio</span></a></li>
+                    <li><a href="{% url 'users:area' %}"><span>Área do Aventureiro</span></a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    {% block content %}
+    {% endblock %}
+
+    <!-- Footer Original -->
+    <footer>
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-about">
+                        <div class="footer-logo">
+                            <img src="{% static 'images/logo/logo.png' %}" alt="Conexão Adventure Logo">
+                        </div>
+                        <p>Proporcionamos experiências únicas em meio à natureza, conectando pessoas com destinos incríveis e criando memórias inesquecíveis.</p>
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                            <a href="#"><i class="fab fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Links Rápidos</h4>
+                        <ul>
+                            <li><a href="{% url 'content:about' %}">Quem Somos</a></li>
+                            <li><a href="{% url 'adventures:list' %}">Programação</a></li>
+                            <li><a href="#">Galeria</a></li>
+                            <li><a href="{% url 'content:contact' %}">Contato</a></li>
+                            <li><a href="{% url 'content:terms' %}">Termos e Condições</a></li>
+                            <li><a href="{% url 'content:privacy' %}">Política de Privacidade</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-contact">
+                        <h4>Contato</h4>
+                        <p><i class="fas fa-map-marker-alt"></i> Rua Ambile Campagnolo sonza, 812, Bento Gonçalves - RS</p>
+                        <p><i class="fas fa-phone"></i> Fone: 54 9629-4491</p>
+                        <p><i class="fas fa-envelope"></i> contato@conexaoadventure.com.br</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 - Conexão Adventure - Desenvolvido por <a href="https://www.ofitec.com.br" target="_blank">Ofitec</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/555496294491" class="whatsapp-float" target="_blank" title="Fale conosco no WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- JavaScript Original -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Rellax.js para efeito parallax -->
+    <script src="https://cdn.jsdelivr.net/npm/rellax@1.12.1/rellax.min.js"></script>
+    <script>
+      var rellax = new Rellax('.rellax');
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

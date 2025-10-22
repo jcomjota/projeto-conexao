@@ -1,0 +1,193 @@
+{% extends "admin/edit_inline/tabular.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block thead %}
+<!-- Removido o cabeçalho da tabela conforme solicitado -->
+{% endblock %}
+
+{% block field_sets %}
+<div class="adventure-images-container">
+  <h2>Imagens da Aventura</h2>
+  <div class="multi-upload-container">
+    <div class="multi-upload-input">
+      <input type="file" id="multi-image-upload" multiple accept="image/*" class="multi-image-input">
+      <label for="multi-image-upload" class="multi-image-label">Escolher Arquivos</label>
+    </div>
+    <div id="image-preview-container" class="image-preview-container"></div>
+  </div>
+  <div class="adventure-images-grid">
+    {% for inline_admin_form in inline_admin_formset %}
+      <div class="adventure-image-item">
+        {% if inline_admin_form.form.instance.pk %}
+          <div class="image-preview">
+            {{ inline_admin_form.form.image_preview }}
+          </div>
+          <div class="image-actions">
+            <div class="delete-action">
+              {{ inline_admin_form.deletion_field.field }}
+              <label for="{{ inline_admin_form.deletion_field.id_for_label }}" class="inline-deletelink">×</label>
+            </div>
+          </div>
+        {% else %}
+          <div class="image-upload">
+            {{ inline_admin_form.form.image }}
+          </div>
+        {% endif %}
+        
+        <div class="hidden-fields">
+          {{ inline_admin_form.form.title }}
+          {{ inline_admin_form.form.description }}
+          {{ inline_admin_form.form.order }}
+          {{ inline_admin_form.form.is_cover }}
+        </div>
+        
+        {% for fieldset in inline_admin_form %}
+          {% for line in fieldset %}
+            {% for field in line %}
+              {% if field.field.name not in 'image,image_preview,title,description,order,is_cover,DELETE' %}
+                <div class="field-{{ field.field.name }}">
+                  {{ field.field.errors.as_ul }}
+                  {{ field.field }}
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+  /* Estilos para a seção de imagens */
+  .adventure-images-inline .tabular {
+    border: none !important;
+  }
+
+  .adventure-images-inline .tabular th {
+    display: none !important;
+  }
+
+  .adventure-images-inline .tabular tr {
+    display: inline-block;
+    width: 200px;
+    margin: 10px;
+    vertical-align: top;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    position: relative;
+  }
+
+  .adventure-images-inline .tabular .field-title,
+  .adventure-images-inline .tabular .field-description,
+  .adventure-images-inline .tabular .field-order,
+  .adventure-images-inline .tabular .field-is_cover,
+  .adventure-images-inline .tabular .original {
+    display: none !important;
+  }
+
+  .adventure-images-inline .tabular .field-image_preview img {
+    max-width: 150px;
+    height: auto;
+    border-radius: 5px;
+  }
+
+  .adventure-images-inline .tabular .inline-deletelink {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #f44336;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 14px;
+  }
+</style>
+{% endblock %}
+
+{% block after_related_objects %}
+{{ block.super }}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const multiUploadInput = document.getElementById('multi-image-upload');
+    const previewContainer = document.getElementById('image-preview-container');
+    
+    if (multiUploadInput && previewContainer) {
+      multiUploadInput.addEventListener('change', function(e) {
+        const files = e.target.files;
+        
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (!file.type.match('image.*')) continue;
+          
+          const reader = new FileReader();
+          
+          reader.onload = (function(file) {
+            return function(e) {
+              // Criar elemento de preview
+              const previewItem = document.createElement('div');
+              previewItem.className = 'preview-item';
+              
+              // Criar imagem
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              previewItem.appendChild(img);
+              
+              // Botão de remover
+              const removeBtn = document.createElement('button');
+              removeBtn.className = 'preview-remove';
+              removeBtn.innerHTML = '×';
+              removeBtn.addEventListener('click', function() {
+                previewItem.remove();
+              });
+              previewItem.appendChild(removeBtn);
+              
+              previewContainer.appendChild(previewItem);
+              
+              // Adicionar nova linha no inline
+              addNewInlineRow(file, e.target.result);
+            };
+          })(file);
+          
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+    
+    function addNewInlineRow(file, previewUrl) {
+      // Encontrar o botão "Adicionar outro" e clicar nele
+      const addButtons = document.querySelectorAll('.add-row a');
+      if (addButtons.length > 0) {
+        const lastAddButton = addButtons[addButtons.length - 1];
+        lastAddButton.click();
+        
+        // Encontrar o último input de arquivo adicionado
+        setTimeout(() => {
+          const fileInputs = document.querySelectorAll('input[type="file"]');
+          const lastFileInput = fileInputs[fileInputs.length - 1];
+          
+          // Criar um objeto File a partir do arquivo original
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          
+          // Definir o arquivo no input
+          if (lastFileInput) {
+            lastFileInput.files = dataTransfer.files;
+            
+            // Disparar evento de mudança para atualizar qualquer lógica associada
+            const event = new Event('change', { bubbles: true });
+            lastFileInput.dispatchEvent(event);
+          }
+        }, 100);
+      }
+    }
+  });
+</script>
+{% endblock %}

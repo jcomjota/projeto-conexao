@@ -1,0 +1,103 @@
+/* Estilos para a página de confirmação de exclusão */
+
+.remover-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.remover-container h1 {
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.remover-container p {
+    margin-bottom: 30px;
+    font-size: 18px;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.resumo, .objetos {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.object-item {
+    margin-bottom: 8px;
+}
+
+.object-group {
+    margin-bottom: 15px;
+}
+
+.object-group h3 {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.object-group ul {
+    margin-left: 20px;
+}
+
+.form-actions {
+    margin-top: 30px;
+}
+
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.remover-button {
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 117px;
+    border: none;
+}
+
+.cancel-button {
+    background-color: #f53737;
+    color: #fff !important;
+}
+
+.cancel-button:hover {
+    background: var(--gradient-bg) !important;
+}
+
+.delete-button {
+    background-color: #dc3545;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+@media (max-width: 768px) {
+    .button-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .button {
+        margin-bottom: 15px;
+        width: 100%;
+        max-width: 250px;
+    }
+}
