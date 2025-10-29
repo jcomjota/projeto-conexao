@@ -4,13 +4,12 @@ Configurações do Django para o projeto Conexão Adventure.
 
 import os
 from pathlib import Path
-
-# Comentando temporariamente para teste local
-# from dotenv import load_dotenv
-# load_dotenv()
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent
+
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-development-key")
